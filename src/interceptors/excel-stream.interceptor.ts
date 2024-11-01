@@ -10,10 +10,11 @@ import * as ExcelJS from 'exceljs';
 import { Readable } from 'stream';
 
 @Injectable()
-export class FileStreamInterceptor implements NestInterceptor {
+export class ExcelStreamInterceptor implements NestInterceptor {
   intercept(context: ExecutionContext, next: CallHandler): Observable<any> {
     const request = context.switchToHttp().getRequest();
     const response = context.switchToHttp().getResponse();
+    console.time('upload with stream interceptor');
 
     if (request.headers['content-type']?.startsWith('multipart/form-data')) {
       const busboy = Busboy({ headers: request.headers });
@@ -48,7 +49,7 @@ export class FileStreamInterceptor implements NestInterceptor {
         );
 
         console.log(`Iniciando tratamento do excel`);
-        console.time('upload with stream interceptor');
+        console.timeLog('upload with stream interceptor');
 
         for await (const worksheetReader of workbookReader) {
           for await (const row of worksheetReader) {
@@ -68,7 +69,6 @@ export class FileStreamInterceptor implements NestInterceptor {
         excelStream.push(null);
 
         // Encerra a leitura do arquivo pra liberar o busboy
-        console.timeEnd('upload with stream interceptor');
         fileStream.resume();
       });
 

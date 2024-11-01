@@ -1,6 +1,6 @@
 import { Transform, TransformCallback } from 'stream';
 
-export class JsonToCsvTransform extends Transform {
+export class JsonToCsvPipe extends Transform {
   constructor() {
     super({ encoding: 'utf8' });
   }

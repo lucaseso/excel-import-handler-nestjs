@@ -11,13 +11,13 @@ import {
 import { AppService } from './app.service';
 import * as busboy from 'busboy';
 import * as ExcelJS from 'exceljs';
-import { FileStreamInterceptor } from './interceptors/file-stream.interceptor';
+import { ExcelStreamInterceptor } from './interceptors/excel-stream.interceptor';
 import { Response } from 'express';
-import { JsonToCsvTransform } from './utils/json-to-csv-stream';
+import { JsonToCsvPipe } from './utils/pipes/json-to-csv-pipe';
 import { RequestExcel } from './types/request-excel';
 import { pipeline } from 'stream';
 import { createWriteStream } from 'fs';
-import { EntityValidationPipe } from './utils/validation/validation-stream';
+import { EntityValidationPipe } from './utils/pipes/validation-stream';
 import { testSchema } from './utils/validation/test-schema';
 
 async function handleFileStream(file: any) {
@@ -52,7 +52,7 @@ export class AppController {
   constructor(private readonly appService: AppService) {}
 
   @Post('/test/interceptor')
-  @UseInterceptors(FileStreamInterceptor)
+  @UseInterceptors(ExcelStreamInterceptor)
   async uploadFileWithInterceptor(
     @Req() req: RequestExcel,
     @Res() res: Response,
@@ -65,7 +65,7 @@ export class AppController {
     }
 
     const validationPipe = new EntityValidationPipe(header, testSchema);
-    const jsonToCsvPipe = new JsonToCsvTransform();
+    const jsonToCsvPipe = new JsonToCsvPipe();
     const writeStream = createWriteStream('output.csv', { encoding: 'utf8' });
 
     pipeline(
@@ -74,16 +74,14 @@ export class AppController {
       jsonToCsvPipe,
       writeStream,
       (error) => {
+        console.timeEnd('upload with stream interceptor');
         if (error instanceof HttpException) {
-          console.timeLog('upload with stream interceptor');
           return next(error);
         } else if (error) {
-          console.timeLog('upload with stream interceptor');
           return next(new HttpException(error.message, 400));
         }
 
         // If successful, handle the finish
-        console.timeLog('upload with stream interceptor');
         res.json({ message: 'OK' });
       },
     );

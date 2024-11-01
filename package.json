@@ -1,10 +1,13 @@
 {
-  "name": "mtrix-api-utils",
+  "name": "mtrix-df",
   "version": "0.0.1",
   "description": "",
-  "author": "",
+  "author": "Lucas Oliveira",
   "private": true,
   "license": "UNLICENSED",
+  "publishConfig": {
+    "registry": "https://us-central1-npm.pkg.dev/prj-c-shared-services-dfbb/npm-server-mtrix/"
+  },
   "scripts": {
     "build": "nest build",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
