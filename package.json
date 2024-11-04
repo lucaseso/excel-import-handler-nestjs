@@ -2,11 +2,12 @@
   "name": "mtrix-df-apidevtools",
   "private": true,
   "scripts": {
-    "dev": "npm run dev --workspace=apps",
-    "dev-package": "npm run dev --workspace=packages/api-devtools",
-    "publish": "npm publish --workspace=packages/api-devtools",
+    "example": "npm run start:dev --workspace=apps/example",
+    "dev-package": "npm run start:dev --workspace=packages/api-devtools",
+    "build-example": "npm run build --workspace=apps/example",
     "build-packages": "npm run build --workspace=packages/api-devtools",
     "format": "prettier --write \"**/*.{ts,tsx,md}\"",
+    "publish": "npm publish --workspace=packages/api-devtools",
     "changeset": "changeset",
     "version-packages": "changeset version"
   },
@@ -16,6 +17,5 @@
   "workspaces": [
     "apps/*",
     "packages/*"
-  ],
-  "packageManager": "pnpm@9.9.0+sha512.60c18acd138bff695d339be6ad13f7e936eea6745660d4cc4a776d5247c540d0edee1a563695c183a66eb917ef88f2b4feb1fc25f32a7adcadc7aaf3438e99c1"
+  ]
 }

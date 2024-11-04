@@ -20,7 +20,7 @@ import {
 import { Response } from 'express';
 import { pipeline } from 'stream';
 import { createWriteStream } from 'fs';
-import { testSchema } from '../../../packages/api-devtools/utils/validation/test-schema';
+import { testSchema } from 'src/utils/validation/test-schema';
 
 async function handleFileStream(file: any) {
   try {
