@@ -3,9 +3,9 @@
   "private": true,
   "scripts": {
     "dev": "npm run dev --workspace=apps",
-    "dev-package": "npm run dev --workspace=packages/apidevtools",
-    "publish": "npm publish --workspace=packages/apidevtools",
-    "build-packages": "npm run build --workspace=packages/apidevtools",
+    "dev-package": "npm run dev --workspace=packages/api-devtools",
+    "publish": "npm publish --workspace=packages/api-devtools",
+    "build-packages": "npm run build --workspace=packages/api-devtools",
     "format": "prettier --write \"**/*.{ts,tsx,md}\"",
     "changeset": "changeset",
     "version-packages": "changeset version"
