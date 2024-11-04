@@ -3,20 +3,20 @@ import {
   NestInterceptor,
   ExecutionContext,
   CallHandler,
-} from '@nestjs/common';
-import { Observable } from 'rxjs';
-import * as Busboy from 'busboy';
-import * as ExcelJS from 'exceljs';
-import { Readable } from 'stream';
+} from "@nestjs/common";
+import { Observable } from "rxjs";
+import * as Busboy from "busboy";
+import * as ExcelJS from "exceljs";
+import { Readable } from "stream";
 
 @Injectable()
 export class ExcelStreamInterceptor implements NestInterceptor {
   intercept(context: ExecutionContext, next: CallHandler): Observable<any> {
     const request = context.switchToHttp().getRequest();
     const response = context.switchToHttp().getResponse();
-    console.time('upload with stream interceptor');
+    console.time("upload with stream interceptor");
 
-    if (request.headers['content-type']?.startsWith('multipart/form-data')) {
+    if (request.headers["content-type"]?.startsWith("multipart/form-data")) {
       const busboy = Busboy({ headers: request.headers });
       let stopReading = false;
 
@@ -30,15 +30,15 @@ export class ExcelStreamInterceptor implements NestInterceptor {
       });
 
       // Intercepta e trata o arquivo enviado
-      busboy.on('file', async (_, fileStream, metadata) => {
+      busboy.on("file", async (_, fileStream, metadata) => {
         console.log(`Recebendo arquivo: ${metadata.filename}`);
 
         // Apenas processar arquivos do Excel
         if (
           metadata.mimeType !==
-          'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+          "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
         ) {
-          response.status(400).send('Tipo de arquivo não suportado');
+          response.status(400).send("Tipo de arquivo não suportado");
           return;
         }
 
@@ -49,7 +49,7 @@ export class ExcelStreamInterceptor implements NestInterceptor {
         );
 
         console.log(`Iniciando tratamento do excel`);
-        console.timeLog('upload with stream interceptor');
+        console.timeLog("upload with stream interceptor");
 
         for await (const worksheetReader of workbookReader) {
           for await (const row of worksheetReader) {
@@ -72,14 +72,14 @@ export class ExcelStreamInterceptor implements NestInterceptor {
         fileStream.resume();
       });
 
-      excelStream.on('error', (error) => {
+      excelStream.on("error", (error) => {
         stopReading = true; // utilizado na leitura do ExcelJS para evitar uso desnecessário de recursos
         excelStream.destroy(error); // Passa o erro para encerrar a stream
         busboy.destroy(new Error());
       });
 
       // Anexa o stream à requisição
-      request['excelStream'] = excelStream;
+      request["excelStream"] = excelStream;
 
       return next.handle(); // Chama o próximo manipulador (controlador)
     } else {

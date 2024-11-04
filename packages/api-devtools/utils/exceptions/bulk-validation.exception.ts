@@ -2,9 +2,9 @@ import {
   HttpException,
   HttpExceptionOptions,
   HttpStatus,
-} from '@nestjs/common';
+} from "@nestjs/common";
 
-import { FileErrorItem, ILineValidationError } from './line-error';
+import { FileErrorItem, ILineValidationError } from "./line-error";
 
 export class BulkValidationException extends HttpException {
   public readonly errors: ILineValidationError[];
@@ -12,7 +12,7 @@ export class BulkValidationException extends HttpException {
   constructor(errors: ILineValidationError[], options?: HttpExceptionOptions) {
     super(
       {
-        message: 'Bulk Validation Failure',
+        message: "Bulk Validation Failure",
         errors: errors,
       },
       HttpStatus.UNPROCESSABLE_ENTITY,

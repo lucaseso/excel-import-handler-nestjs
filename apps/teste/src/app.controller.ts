@@ -11,14 +11,16 @@ import {
 import { AppService } from './app.service';
 import * as busboy from 'busboy';
 import * as ExcelJS from 'exceljs';
-import { ExcelStreamInterceptor } from './interceptors/excel-stream.interceptor';
+import {
+  RequestExcel,
+  ExcelStreamInterceptor,
+  EntityValidationPipe,
+  JsonToCsvPipe,
+} from '@mtrix-df/apidevtools';
 import { Response } from 'express';
-import { JsonToCsvPipe } from './utils/pipes/json-to-csv-pipe';
-import { RequestExcel } from './types/request-excel';
 import { pipeline } from 'stream';
 import { createWriteStream } from 'fs';
-import { EntityValidationPipe } from './utils/pipes/validation-stream';
-import { testSchema } from './utils/validation/test-schema';
+import { testSchema } from '../../../packages/api-devtools/utils/validation/test-schema';
 
 async function handleFileStream(file: any) {
   try {

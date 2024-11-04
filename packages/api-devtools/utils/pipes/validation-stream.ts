@@ -1,11 +1,11 @@
-import { Transform, TransformCallback } from 'stream';
-import { ZodSchema } from 'zod';
-import { BulkValidationException } from '../exceptions/bulk-validation.exception';
+import { Transform, TransformCallback } from "stream";
+import { ZodSchema } from "zod";
+import { BulkValidationException } from "../exceptions/bulk-validation.exception";
 import {
   ILineValidationError,
   ZodValidationError,
-} from '../exceptions/line-error';
-import { HeaderValidationException } from '../exceptions/header-validation.exception';
+} from "../exceptions/line-error";
+import { HeaderValidationException } from "../exceptions/header-validation.exception";
 
 export class EntityValidationPipe extends Transform {
   private errors: ILineValidationError[] = [];
@@ -30,8 +30,8 @@ export class EntityValidationPipe extends Transform {
       if (line.rowNumber == 1) {
         for (let i = 0; i < this.headers.length; i++) {
           // +1 no array da linha porque o ExcelJS retorna o 0 vazio
-          if (this.headers[i] !== line.values[i+1]) {
-            this.emit('error', new HeaderValidationException()); // Emite um evento se houver erros
+          if (this.headers[i] !== line.values[i + 1]) {
+            this.emit("error", new HeaderValidationException()); // Emite um evento se houver erros
           }
         }
         return callback(); // Pula o restante da lógica para cabeçalho
@@ -64,7 +64,7 @@ export class EntityValidationPipe extends Transform {
 
   _final(callback: TransformCallback): void {
     if (this.errors.length > 0) {
-      this.emit('error', new BulkValidationException(this.errors)); // Emite um evento se houver erros
+      this.emit("error", new BulkValidationException(this.errors)); // Emite um evento se houver erros
     }
     callback(); // Finaliza a stream
   }

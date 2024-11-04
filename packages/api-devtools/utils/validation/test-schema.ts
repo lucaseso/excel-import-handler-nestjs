@@ -1,4 +1,4 @@
-import { z } from 'zod';
+import { z } from "zod";
 
 export const testSchema = z.object({
   CD_DIST: z.coerce.number().int().min(0),

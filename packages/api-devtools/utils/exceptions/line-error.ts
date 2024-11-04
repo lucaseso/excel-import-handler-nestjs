@@ -1,4 +1,4 @@
-import { ZodError } from 'zod';
+import { ZodError } from "zod";
 
 export type FileErrorItem = {
   line: number;
@@ -26,8 +26,8 @@ export class ZodValidationError implements ILineValidationError {
   validationErrors: ZodError[];
 
   constructor(line, validationErrors) {
-    this.line = line
-    this.validationErrors = validationErrors
+    this.line = line;
+    this.validationErrors = validationErrors;
   }
 
   formatToResponse(): FileErrorItem[] {
@@ -73,9 +73,9 @@ export class LineValidationError implements ILineValidationError {
 
   addErrorToColumn(column, value: i18nMessage | string) {
     if (!this.validationErrors.has(column)) {
-      this.validationErrors.set('column', []);
+      this.validationErrors.set("column", []);
     }
 
-    this.validationErrors.get('column').push(value);
+    this.validationErrors.get("column").push(value);
   }
 }
