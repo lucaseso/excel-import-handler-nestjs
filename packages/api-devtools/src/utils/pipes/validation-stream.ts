@@ -21,7 +21,7 @@ export class EntityValidationPipe extends Transform {
   _transform(
     chunk: any,
     encoding: BufferEncoding,
-    callback: TransformCallback,
+    callback: TransformCallback
   ): void {
     try {
       const line = JSON.parse(chunk.toString()); // Parse o JSON
@@ -49,7 +49,7 @@ export class EntityValidationPipe extends Transform {
       if (!result.success) {
         // Coleta erros se a validação falhar
         this.errors.push(
-          new ZodValidationError(line.rowNumber, [result.error]),
+          new ZodValidationError(line.rowNumber, [result.error])
         );
       } else {
         // Se passar na validação, envia para a próxima stream
@@ -64,7 +64,7 @@ export class EntityValidationPipe extends Transform {
 
   _final(callback: TransformCallback): void {
     if (this.errors.length > 0) {
-      this.emit("error", new BulkValidationException(this.errors)); // Emite um evento se houver erros
+      callback(new BulkValidationException(this.errors)); // Emite um evento se houver erros
     }
     callback(); // Finaliza a stream
   }

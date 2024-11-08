@@ -18,7 +18,7 @@ export class ExcelStreamInterceptor implements NestInterceptor {
 
     if (request.headers["content-type"]?.startsWith("multipart/form-data")) {
       const busboy = Busboy({ headers: request.headers });
-      let stopReading = false;
+      request['stopReading'] = false;
 
       // Criar um stream legível para as folhas de trabalho
       const excelStream = new Readable({
@@ -54,7 +54,7 @@ export class ExcelStreamInterceptor implements NestInterceptor {
         for await (const worksheetReader of workbookReader) {
           for await (const row of worksheetReader) {
             // evitar uso desnecessário de recursos caso exista erro
-            if (stopReading) break;
+            if (request['stopReading']) break;
             const rowData = JSON.stringify({
               rowNumber: row.number,
               values: row.values,
@@ -70,12 +70,6 @@ export class ExcelStreamInterceptor implements NestInterceptor {
 
         // Encerra a leitura do arquivo pra liberar o busboy
         fileStream.resume();
-      });
-
-      excelStream.on("error", (error) => {
-        stopReading = true; // utilizado na leitura do ExcelJS para evitar uso desnecessário de recursos
-        excelStream.destroy(error); // Passa o erro para encerrar a stream
-        busboy.destroy(new Error());
       });
 
       // Anexa o stream à requisição

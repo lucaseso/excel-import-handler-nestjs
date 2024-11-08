@@ -66,14 +66,12 @@ export class AppController {
       return res.status(400).send('Nenhum arquivo enviado ou processado');
     }
 
-    const validationPipe = new EntityValidationPipe(header, testSchema);
-    const jsonToCsvPipe = new JsonToCsvPipe();
     const writeStream = createWriteStream('output.csv', { encoding: 'utf8' });
 
     pipeline(
       excelStream,
-      validationPipe,
-      jsonToCsvPipe,
+      new EntityValidationPipe(header, testSchema), // Pipe para validação
+      new JsonToCsvPipe(), // Transforma JSON em CSV
       writeStream,
       (error) => {
         console.timeEnd('upload with stream interceptor');

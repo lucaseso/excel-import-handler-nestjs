@@ -1,14 +1,10 @@
 import { Transform, TransformCallback } from "stream";
 
 export class JsonToCsvPipe extends Transform {
-  constructor() {
-    super({ encoding: "utf8" });
-  }
-
   _transform(
     chunk: Buffer | string,
     encoding: string,
-    cb: TransformCallback,
+    cb: TransformCallback
   ): void {
     // Converte JSON diretamente em CSV e passa para o próximo stream
     const csvLine =
