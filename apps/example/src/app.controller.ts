@@ -60,12 +60,12 @@ export class AppController {
     @Res() res: Response,
     @Next() next,
   ) {
-    console.time('upload with stream interceptor');
     const excelStream = req.excelStream;
-
     if (!excelStream) {
       return res.status(400).send('Nenhum arquivo enviado ou processado');
     }
+
+    console.time('upload with stream interceptor');
 
     const writeStream = createWriteStream('output.csv', { encoding: 'utf8' });
 

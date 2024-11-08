@@ -18,6 +18,8 @@ export class ExcelStreamMiddleware implements NestMiddleware {
       // Cria uma promise para aguardar a leitura do arquivo
       await new Promise<void>((resolve, reject) => {
         busboy.on("file", async (_, fileStream, metadata) => {
+          fileProcessed = true; // Marca que o arquivo foi processado
+
           // Verifica se o tipo de arquivo é Excel
           if (
             metadata.mimeType !==
@@ -52,7 +54,7 @@ export class ExcelStreamMiddleware implements NestMiddleware {
         });
 
         // Evento para caso nenhum arquivo seja enviado
-        busboy.on("finish", () => {
+        busboy.on("close", () => {
           if (!fileProcessed) {
             resolve();
             next(); // Chama o próximo middleware/controller
