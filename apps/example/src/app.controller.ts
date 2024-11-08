@@ -13,9 +13,9 @@ import * as busboy from 'busboy';
 import * as ExcelJS from 'exceljs';
 import {
   RequestExcel,
-  ExcelStreamInterceptor,
-  EntityValidationPipe,
+  ExcelToObjectPipe,
   JsonToCsvPipe,
+  ExcelStreamInterceptor,
 } from '@mtrix-df/apidevtools';
 import { Response } from 'express';
 import { pipeline } from 'stream';
@@ -54,12 +54,13 @@ export class AppController {
   constructor(private readonly appService: AppService) {}
 
   @Post('/test/interceptor')
-  @UseInterceptors(ExcelStreamInterceptor)
+  // @UseInterceptors(ExcelStreamInterceptor)
   async uploadFileWithInterceptor(
     @Req() req: RequestExcel,
     @Res() res: Response,
     @Next() next,
   ) {
+    console.time('upload with stream interceptor');
     const excelStream = req.excelStream;
 
     if (!excelStream) {
@@ -70,7 +71,7 @@ export class AppController {
 
     pipeline(
       excelStream,
-      new EntityValidationPipe(header, testSchema), // Pipe para validação
+      new ExcelToObjectPipe(header, testSchema), // Pipe para validação
       new JsonToCsvPipe(), // Transforma JSON em CSV
       writeStream,
       (error) => {

@@ -14,11 +14,10 @@ export class ExcelStreamInterceptor implements NestInterceptor {
   intercept(context: ExecutionContext, next: CallHandler): Observable<any> {
     const request = context.switchToHttp().getRequest();
     const response = context.switchToHttp().getResponse();
-    console.time("upload with stream interceptor");
 
     if (request.headers["content-type"]?.startsWith("multipart/form-data")) {
       const busboy = Busboy({ headers: request.headers });
-      request['stopReading'] = false;
+      request["stopReading"] = false;
 
       // Criar um stream legível para as folhas de trabalho
       const excelStream = new Readable({
@@ -31,8 +30,6 @@ export class ExcelStreamInterceptor implements NestInterceptor {
 
       // Intercepta e trata o arquivo enviado
       busboy.on("file", async (_, fileStream, metadata) => {
-        console.log(`Recebendo arquivo: ${metadata.filename}`);
-
         // Apenas processar arquivos do Excel
         if (
           metadata.mimeType !==
@@ -45,27 +42,21 @@ export class ExcelStreamInterceptor implements NestInterceptor {
         // Criar o leitor de workbooks do ExcelJS
         const workbookReader: any = new ExcelJS.stream.xlsx.WorkbookReader(
           fileStream,
-          {},
+          {}
         );
-
-        console.log(`Iniciando tratamento do excel`);
-        console.timeLog("upload with stream interceptor");
 
         for await (const worksheetReader of workbookReader) {
           for await (const row of worksheetReader) {
             // evitar uso desnecessário de recursos caso exista erro
-            if (request['stopReading']) break;
-            const rowData = JSON.stringify({
-              rowNumber: row.number,
-              values: row.values,
-            });
-
-            excelStream.push(rowData);
+            if (request["stopReading"]) {
+              break;
+            }
+            excelStream.push(row);
           }
           break;
         }
 
-        // Ecncerrar stream
+        // Encerrar stream
         excelStream.push(null);
 
         // Encerra a leitura do arquivo pra liberar o busboy
